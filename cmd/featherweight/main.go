@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"sync"
@@ -11,11 +12,12 @@ import (
 
 func main() {
 	workerCount := 4
-	basePort := 5000
+	defaultBasePort := 5000
+	basePort := flag.Int("port", defaultBasePort, "The base port for the workers")
 
 	// A worker manager spawns Python workers and estblishes persistent 
 	// connections.
-	wm, err := workerpool.NewWorkerManager(workerCount, basePort, workerpool.PY_WORKER)
+	wm, err := workerpool.NewWorkerManager(workerCount, *basePort, workerpool.PY_WORKER)
 	if err != nil {
 		log.Fatalf("Failed to create worker manager: %v", err)
 	}
