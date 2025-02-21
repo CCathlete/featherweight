@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"net"
 	"sync"
+
+	"github.com/CCathlete/featherweight/src/entities"
 )
 
 type PyWorker struct {
@@ -48,3 +50,12 @@ func (w *PyWorker) SendRequest(request string) (response string, err error){
 
 	return
 }
+
+// Termianting the persistent connection with this worker.
+func (w *PyWorker) Stop() (err error) {
+	err = w.conn.Close()
+	return
+}
+
+
+var _ entities.Worker = (*PyWorker)(nil)
