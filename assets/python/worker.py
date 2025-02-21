@@ -33,14 +33,16 @@ def main() -> None:
   """
   Entry point for the worker module.
   """
-  with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((HOST, port))
-    s.listen()
+  with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as listener_socket:
+    listener_socket.bind((HOST, port))
+    listener_socket.listen()
     print(f"Python worker listening on {HOST}:{port}")
     while True:
-      conn, addr = s.accept()
-      handle_client(conn)
-      conn.close()
+      # Repeatedly listening for new connections.
+      connection_socket, addr = listener_socket.accept()
+      # Keeping the connection alive and handling the requests.
+      handle_client(connection_socket)
+      connection_socket.close()
     
 
 
