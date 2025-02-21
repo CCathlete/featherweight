@@ -2,6 +2,7 @@ package workerpool
 
 import (
 	"bytes"
+	"fmt"
 	"net"
 	"sync"
 
@@ -47,6 +48,7 @@ func (w *PyWorker) SendRequest(request string) (response string, err error){
 		return
 	}
 	response = buf.String()
+	fmt.Printf("Response from worker: %s\n", response)
 
 	return
 }

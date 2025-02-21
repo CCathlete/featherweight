@@ -36,6 +36,8 @@ func main() {
 		wg.Add(1)
 		go func(reqNum int) {
 			defer wg.Done()
+			// Dividing the load between the workers in a round-robin fashion.
+			// E.g. worker 1 gets mod 0 requests, worker 2 gets mod 1 requests, etc.
 			worker := wm.GetWorkers()[reqNum % workerCount]
 			request := fmt.Sprintf("Request %d", reqNum)
 			response, err := worker.SendRequest(request)
