@@ -15,11 +15,16 @@ func main() {
 
 	// A worker manager spawns Python workers and estblishes persistent 
 	// connections.
-	wm, err := workerpool.NewWorkerManager(workerCount, basePort)
+	wm, err := workerpool.NewWorkerManager(workerCount, basePort, workerpool.PY_WORKER)
 	if err != nil {
 		log.Fatalf("Failed to create worker manager: %v", err)
 	}
-	defer wm.StopAll()
+	defer func () {
+		errs := wm.StopAll()
+		if errs != nil {
+			log.Fatalf("Failed to stop workers: %v", errs)
+		}
+	}()
 
 	fmt.Println("All workers started with persistent connections.")
 
