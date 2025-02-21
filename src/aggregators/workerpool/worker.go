@@ -48,6 +48,7 @@ func (w *PyWorker) SendRequest(request string) (response string, err error){
 		return
 	}
 	response = buf.String()
+	fmt.Printf("Request from client: %s\n", request)
 	fmt.Printf("Response from worker: %s\n", response)
 
 	return
