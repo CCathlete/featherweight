@@ -33,6 +33,15 @@ def main() -> None:
   """
   Entry point for the worker module.
   """
+  with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.bind((HOST, port))
+    s.listen()
+    print(f"Python worker listening on {HOST}:{port}")
+    while True:
+      conn, addr = s.accept()
+      handle_client(conn)
+      conn.close()
+    
 
 
 if __name__ == "__main__":
