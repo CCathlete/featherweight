@@ -1,7 +1,9 @@
 package workerpool
 
+import "github.com/CCathlete/featherweight/src/entities"
+
 type WorkerManager interface {
-	GetWorkers() []Worker
+	GetWorkers() []entities.Worker
 	StopAll() error
 }
 

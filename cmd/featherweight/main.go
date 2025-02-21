@@ -5,7 +5,7 @@ import (
 	"log"
 	"sync"
 
-	"github.com/CCathlete/featherweight/src/infrastructure/workerpool"
+	"github.com/CCathlete/featherweight/src/aggregators/workerpool"
 )
 
 
