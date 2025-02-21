@@ -95,7 +95,7 @@ func
 					// Keeping track on the spawned processes.
 					pwm.cmds = append(pwm.cmds, cmd)
 					// Allowing the worker to start and bind to its port.
-					time.Sleep(500 * time.Millisecond)
+					time.Sleep(1500 * time.Millisecond)
 					
 					innerAddress := fmt.Sprintf("localhost:%d", port)
 					var worker *PyWorker

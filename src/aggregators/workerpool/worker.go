@@ -1,7 +1,7 @@
 package workerpool
 
 import (
-	"bytes"
+	"bufio"
 	"fmt"
 	"net"
 	"sync"
@@ -42,12 +42,10 @@ func (w *PyWorker) SendRequest(request string) (response string, err error){
 		return
 	}
 
-	buf := bytes.Buffer{}
-	_, err = buf.ReadFrom(w.conn)
-	if err != nil {
-		return
-	}
-	response = buf.String()
+	// Using a buffered io reader instead of a bytes buffer to avoid asynchronous 
+	// behaviour.
+	reader := bufio.NewReader(w.conn)
+	response, err = reader.ReadString('\n')
 	fmt.Printf("Request from client: %s\n", request)
 	fmt.Printf("Response from worker: %s\n", response)
 

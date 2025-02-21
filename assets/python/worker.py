@@ -10,7 +10,7 @@ if len(sys.argv) > 1:
 else:
   port = 5000
 
-HOST: str = "localhost"
+HOST: str = "127.0.0.1"
 
 def handle_client(sock: socket.socket) -> None:
   """
@@ -27,7 +27,7 @@ def handle_client(sock: socket.socket) -> None:
     response: str = data.decode('utf-8').upper()
     # After decoding the input message and converting to upper case we sent it 
     # as a response after encoding it again.
-    sock.sendall(response.encode('utf-8'))
+    sock.sendall((response + '\n').encode('utf-8'))
 
 def main() -> None:
   """
