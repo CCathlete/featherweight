@@ -1,7 +1,11 @@
 package workerpool
 
 import (
+	"fmt"
+	"os"
 	"os/exec"
+	"path/filepath"
+	"time"
 
 	"github.com/CCathlete/featherweight/src/entities"
 )
@@ -52,10 +56,56 @@ func
 			nwm WorkerManager,
 			err error,
 		) {
-			if workerType == PY_WORKER {
-				nwm = &PyWorkerManager{
-					WorkerCount: workerCount,
+
+			exeDir := func() (ed string, err error){
+				exePath, err := os.Executable()
+				if err != nil {
+					return
 				}
+				ed = filepath.Dir(exePath)
+
+				return
+			}
+
+			if workerType == PY_WORKER {
+				pwm := &PyWorkerManager{
+					WorkerCount: workerCount,
+					cmds: make([]*exec.Cmd, workerCount),
+				}
+
+				// Starting each of the workers.
+				var ed, workerPath string
+				for i := range workerCount {
+					port := basePort + i
+					// Spawning a py worker process.
+					ed, err = exeDir()
+					if err != nil {
+						return
+					}
+					pyPath := fmt.Sprintf("%s/../../assets/python/worker.py", ed)
+					workerPath, err = filepath.Abs(pyPath) 
+					if err != nil {
+						return
+					}
+					cmd := exec.Command("python3", workerPath, fmt.Sprintf("%d", port))
+					if err = cmd.Start(); err != nil {
+						return
+					} 
+
+					// Keeping track on the spawned processes.
+					pwm.cmds = append(pwm.cmds, cmd)
+					// Allowing the worker to start and bind to its port.
+					time.Sleep(500 * time.Millisecond)
+					
+					innerAddress := fmt.Sprintf("localhost:%d", port)
+					var worker *PyWorker
+					worker, err = NewPyWorker(innerAddress)
+					if err != nil {
+						return
+					}
+					pwm.Workers = append(pwm.Workers, worker)
+				}
+				nwm = pwm
 			}
 
 			return
